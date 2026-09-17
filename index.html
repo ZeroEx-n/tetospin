@@ -5,32 +5,65 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Teto Spin</title>
     <style>
-       
+        /* Если у тебя есть файл шрифта "Доброшрифт" (например .woff2/.ttf),
+           положи его рядом и раскомментируй блок ниже, указав правильное имя файла.
+           Без этого блока браузер попробует найти шрифт "Доброшрифт" среди
+           установленных в системе, а если не найдёт — использует запасной. */
+        /*
+        @font-face {
+            font-family: 'Доброшрифт';
+            src: url('dobroshrift.woff2') format('woff2'),
+                 url('dobroshrift.ttf') format('truetype');
+        }
+        */
+ 
+        /* Настройки для всей страницы */
         body {
-            background-color: #ffb6c1; 
+            background-color: #ffb6c1; /* Красивый нежно-розовый цвет */
             margin: 0;
-            height: 100vh; 
+            height: 100vh; /* Растягиваем на всю высоту экрана */
             display: flex;
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden; 
+            flex-direction: column;
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
+            overflow: hidden; /* Убираем возможные полосы прокрутки */
+            gap: 20px;
+        }
+ 
+        img {
+            cursor: pointer; /* Показываем, что по картинке можно кликать */
+            user-select: none;
+        }
+ 
+        .caption {
+            font-family: 'Доброшрифт', cursive, sans-serif;
+            font-size: 48px;
+            color: #ffffff;
+            text-shadow: 2px 2px 0 #ff69b4, -1px -1px 0 #ff69b4,
+                         1px -1px 0 #ff69b4, -1px 1px 0 #ff69b4;
+            margin: 0;
+            letter-spacing: 2px;
+            pointer-events: none; /* чтобы клики проходили насквозь, если надпись поверх гифки */
         }
     </style>
 </head>
 <body>
-    <img src="a.gif" alt="Spinning Teto">
-    
+    <img id="teto" src="a.gif" alt="Spinning Teto">
+    <p class="caption">touch her</p>
     <audio id="myAudio" src="a.m4a" loop></audio>
-    
     <script>
         const audio = document.getElementById('myAudio');
-        
-        
-        document.addEventListener('click', () => {
-            audio.play().catch(error => {
-                console.log("Автовоспроизведение заблокировано или файл не найден:", error);
-            });
-        }, { once: true });
+        const teto = document.getElementById('teto');
+ 
+        // Музыка начинается (и продолжает играть бесконечно благодаря loop)
+        // именно при клике по гифке, а не по всей странице
+        teto.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().catch(error => {
+                    console.log("Автовоспроизведение заблокировано или файл не найден:", error);
+                });
+            }
+        });
     </script>
 </body>
 </html>
