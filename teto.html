@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Teto Spin</title>
+    <style>
+        /* Настройки для всей страницы */
+        body {
+            background-color: #ffb6c1; /* Красивый нежно-розовый цвет */
+            margin: 0;
+            height: 100vh; /* Растягиваем на всю высоту экрана */
+            display: flex;
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
+            overflow: hidden; /* Убираем возможные полосы прокрутки */
+        }
+
+        /* Класс, который делает плеер невидимым */
+        .hidden-player {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <img src="a.gif" alt="Spinning Teto">
+    <audio src="a.m4a" autoplay loop> </audio>
+    <script>
+        
+        const audio = document.getElementById('myAudio');
+        
+        document.addEventListener('click', () => {
+            audio.play();
+        }, { once: true });
+    </script>
+</body>
+</html>
