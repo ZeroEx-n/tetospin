@@ -1,292 +1,36 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang='ru'>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Загрузка фото</title>
-<style>
-  :root {
-    --bg: #f4f7fa;
-    --card: #ffffff;
-    --ink: #1b2430;
-    --muted: #6b7788;
-    --line: #d5dce5;
-    --accent: #2f5bff;
-    --accent-dark: #1f43d1;
-    --danger: #d23b4a;
-    --ok: #1d9a63;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.5;
-  }
-  main { max-width: 920px; margin: 0 auto; padding: 40px 20px 64px; }
-  h1 { font-size: 2rem; margin: 0 0 6px; letter-spacing: -0.02em; }
-  .sub { color: var(--muted); margin: 0 0 28px; }
-
-  .drop {
-    display: block;
-    border: 2px dashed var(--line);
-    border-radius: 14px;
-    background: var(--card);
-    padding: 48px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-  }
-  .drop:hover, .drop:focus-within, .drop.over {
-    border-color: var(--accent);
-    background: #eef2ff;
-  }
-  .drop strong { font-size: 1.1rem; }
-  .drop span { display: block; color: var(--muted); font-size: .92rem; margin-top: 4px; }
-  .drop svg { width: 44px; height: 44px; stroke: var(--accent); margin-bottom: 10px; }
-  .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-
-  .bar {
-    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-    justify-content: space-between;
-    margin: 24px 0 14px;
-  }
-  .bar[hidden] { display: none; }
-  .count { color: var(--muted); }
-  .actions { display: flex; gap: 10px; }
-  button {
-    font: inherit; font-weight: 600;
-    border-radius: 9px; padding: 10px 18px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--card); color: var(--ink);
-  }
-  button:hover { border-color: var(--ink); }
-  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  button:focus-visible, .drop:focus-within { outline: 3px solid rgba(47,91,255,.4); outline-offset: 2px; }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 14px;
-  }
-  .item {
-    position: relative;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .item img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; cursor: zoom-in; }
-  .meta { padding: 8px 10px 10px; font-size: .85rem; }
-  .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-  .size { color: var(--muted); }
-  .status { font-size: .8rem; margin-top: 2px; }
-  .status.ok { color: var(--ok); }
-  .status.err { color: var(--danger); }
-  .rm {
-    position: absolute; top: 8px; right: 8px;
-    width: 30px; height: 30px; padding: 0;
-    border-radius: 50%; line-height: 1; font-size: 18px;
-    background: rgba(27,36,48,.75); color: #fff; border: none;
-  }
-  .rm:hover { background: var(--danger); }
-  .progress { height: 4px; background: var(--line); }
-  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
-
-  .msg { margin-top: 14px; color: var(--danger); font-size: .92rem; min-height: 1.4em; }
-
-  dialog { border: none; padding: 0; background: transparent; max-width: 94vw; max-height: 94vh; }
-  dialog::backdrop { background: rgba(10,14,20,.8); }
-  dialog img { max-width: 94vw; max-height: 90vh; border-radius: 10px; display: block; }
-</style>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Teto Spin</title>
+    <style>
+        /* Настройки для всей страницы */
+        body {
+            background-color: #ffb6c1; /* Красивый нежно-розовый цвет */
+            margin: 0;
+            height: 100vh; /* Растягиваем на всю высоту экрана */
+            display: flex;
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
+            overflow: hidden; /* Убираем возможные полосы прокрутки */
+        }
+    </style>
 </head>
 <body>
-<main>
-  <h1>Загрузка фото</h1>
-  <p class="sub">Перетащите изображения в область ниже или выберите их на устройстве.</p>
-
-  <label class="drop" id="drop">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/>
-    </svg>
-    <strong>Выберите фото или перетащите сюда</strong>
-    <span>JPG, PNG, WEBP, GIF · до 10 МБ каждое</span>
-    <input type="file" id="input" accept="image/*" multiple>
-  </label>
-
-  <div class="msg" id="msg" role="alert"></div>
-
-  <div class="bar" id="bar" hidden>
-    <div class="count" id="count"></div>
-    <div class="actions">
-      <button id="clear">Очистить всё</button>
-      <button id="send" class="primary">Загрузить на сервер</button>
-    </div>
-  </div>
-
-  <div class="grid" id="grid"></div>
-</main>
-
-<dialog id="viewer"><img alt=""></dialog>
-
-<script>
-  // Адрес вашего сервера, который принимает файлы (POST, multipart/form-data, поле "photo").
-  // Пока адрес пустой, кнопка «Загрузить на сервер» не отправляет файлы.
-  const UPLOAD_URL = "";
-  const MAX_SIZE = 10 * 1024 * 1024;
-
-  const drop = document.getElementById("drop");
-  const input = document.getElementById("input");
-  const grid = document.getElementById("grid");
-  const bar = document.getElementById("bar");
-  const count = document.getElementById("count");
-  const msg = document.getElementById("msg");
-  const sendBtn = document.getElementById("send");
-  const viewer = document.getElementById("viewer");
-
-  let files = []; // { id, file, url, state, node }
-  let nextId = 1;
-
-  function fmt(bytes) {
-    if (bytes < 1024) return bytes + " Б";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " КБ";
-    return (bytes / 1024 / 1024).toFixed(1) + " МБ";
-  }
-
-  function addFiles(list) {
-    const errors = [];
-    for (const file of list) {
-      if (!file.type.startsWith("image/")) {
-        errors.push(`«${file.name}» — это не изображение.`);
-        continue;
-      }
-      if (file.size > MAX_SIZE) {
-        errors.push(`«${file.name}» больше 10 МБ.`);
-        continue;
-      }
-      const item = { id: nextId++, file, url: URL.createObjectURL(file), state: "ready" };
-      item.node = render(item);
-      grid.appendChild(item.node);
-      files.push(item);
-    }
-    msg.textContent = errors.join(" ");
-    update();
-  }
-
-  function render(item) {
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerHTML = `
-      <img alt="">
-      <button class="rm" title="Удалить" aria-label="Удалить фото">×</button>
-      <div class="progress"><i></i></div>
-      <div class="meta">
-        <div class="name"></div>
-        <div class="size"></div>
-        <div class="status"></div>
-      </div>`;
-    const img = el.querySelector("img");
-    img.src = item.url;
-    img.alt = item.file.name;
-    img.addEventListener("click", () => {
-      viewer.querySelector("img").src = item.url;
-      viewer.showModal();
-    });
-    el.querySelector(".name").textContent = item.file.name;
-    el.querySelector(".name").title = item.file.name;
-    el.querySelector(".size").textContent = fmt(item.file.size);
-    el.querySelector(".rm").addEventListener("click", () => remove(item.id));
-    return el;
-  }
-
-  function remove(id) {
-    const i = files.findIndex(f => f.id === id);
-    if (i === -1) return;
-    URL.revokeObjectURL(files[i].url);
-    files[i].node.remove();
-    files.splice(i, 1);
-    update();
-  }
-
-  function update() {
-    bar.hidden = files.length === 0;
-    const n = files.length;
-    const total = files.reduce((s, f) => s + f.file.size, 0);
-    count.textContent = n ? `Выбрано: ${n} · ${fmt(total)}` : "";
-  }
-
-  function setStatus(item, text, cls) {
-    const s = item.node.querySelector(".status");
-    s.textContent = text;
-    s.className = "status " + (cls || "");
-  }
-
-  function uploadOne(item) {
-    return new Promise(resolve => {
-      const xhr = new XMLHttpRequest();
-      const bar = item.node.querySelector(".progress i");
-      xhr.open("POST", UPLOAD_URL);
-      xhr.upload.onprogress = e => {
-        if (e.lengthComputable) bar.style.width = (e.loaded / e.total * 100) + "%";
-      };
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          item.state = "done";
-          bar.style.width = "100%";
-          setStatus(item, "Загружено", "ok");
-        } else {
-          item.state = "error";
-          setStatus(item, "Ошибка " + xhr.status, "err");
-        }
-        resolve();
-      };
-      xhr.onerror = () => {
-        item.state = "error";
-        setStatus(item, "Нет связи с сервером", "err");
-        resolve();
-      };
-      const data = new FormData();
-      data.append("photo", item.file, item.file.name);
-      xhr.send(data);
-    });
-  }
-
-  sendBtn.addEventListener("click", async () => {
-    if (!UPLOAD_URL) {
-      msg.textContent = "Адрес сервера не задан: укажите UPLOAD_URL в начале скрипта.";
-      return;
-    }
-    msg.textContent = "";
-    sendBtn.disabled = true;
-    for (const item of files.filter(f => f.state !== "done")) {
-      setStatus(item, "Загрузка…");
-      await uploadOne(item);
-    }
-    sendBtn.disabled = false;
-  });
-
-  document.getElementById("clear").addEventListener("click", () => {
-    files.forEach(f => URL.revokeObjectURL(f.url));
-    files = [];
-    grid.innerHTML = "";
-    msg.textContent = "";
-    update();
-  });
-
-  input.addEventListener("change", () => {
-    addFiles(input.files);
-    input.value = "";
-  });
-
-  ["dragenter", "dragover"].forEach(ev =>
-    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
-  ["dragleave", "drop"].forEach(ev =>
-    drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
-  drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
-
-  viewer.addEventListener("click", () => viewer.close());
-</script>
+    <img src="a.gif" alt="Spinning Teto">
+    
+    <audio id="myAudio" src="a.m4a" loop></audio>
+    
+    <script>
+        const audio = document.getElementById('myAudio');
+        
+        // Музыка начнется при первом клике пользователя по экрану
+        document.addEventListener('click', () => {
+            audio.play().catch(error => {
+                console.log("Автовоспроизведение заблокировано или файл не найден:", error);
+            });
+        }, { once: true });
+    </script>
 </body>
 </html>
